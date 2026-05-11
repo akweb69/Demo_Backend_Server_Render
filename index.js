@@ -39,6 +39,10 @@ async function run() {
     // ===========================================
     // Routes
     // ===========================================
+    // test route
+    app.get("/test", (req, res) => {
+      res.send("Server Running");
+    });
   } catch (error) {
     console.log(error);
   }
