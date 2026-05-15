@@ -1,8 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+const nodemailer = require("nodemailer");
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -36,6 +37,31 @@ async function run() {
 
     console.log("MongoDB Connected");
 
+    // ===========================================
+    // Nodemailer all setup
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+    app.get("/test-email", async (req, res) => {
+      try {
+        await transporter.sendMail({
+          from: process.env.EMAIL_USER,
+          to: "abukalameeebsmrstu@gmail.com",
+          subject: "Test Email",
+          text: "Nodemailer working successfully",
+        });
+
+        res.send("Email sent");
+      } catch (error) {
+        console.log(error);
+        res.send("Failed");
+      }
+    });
+    // ===========================================
     // ===========================================
     // Routes
     // ===========================================
