@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+const speakeasy = require("speakeasy");
 const nodemailer = require("nodemailer");
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -68,6 +69,108 @@ async function run() {
     // test route
     app.get("/test", (req, res) => {
       res.send("Server Running test");
+    });
+
+    // ====================== GOOGLE AUTHENTICATOR (2FA) - FORCE FOR ALL ADMINS ======================
+
+    // Generate / Enable 2FA Secret for Admin (যদি না থাকে তাহলে তৈরি করবে)
+    app.post("/auth/generate-2fa", async (req, res) => {
+      try {
+        const { email } = req.body;
+        if (!email)
+          return res
+            .status(400)
+            .send({ success: false, message: "Email required" });
+
+        const user = await db.collection("users").findOne({ email });
+        if (!user)
+          return res
+            .status(404)
+            .send({ success: false, message: "User not found" });
+        if (!user.isAdmin)
+          return res
+            .status(403)
+            .send({ success: false, message: "Only admins allowed" });
+
+        // যদি আগে থেকে secret না থাকে তাহলে নতুন তৈরি করো
+        let secret = user.twoFactorSecret;
+        if (!secret) {
+          const newSecret = speakeasy.generateSecret({
+            name: `TKDropship Admin (${email})`,
+            length: 20,
+          });
+
+          await db.collection("users").updateOne(
+            { email },
+            {
+              $set: {
+                twoFactorSecret: newSecret.base32,
+                twoFactorEnabled: true,
+              },
+            },
+          );
+          secret = newSecret.base32;
+
+          return res.send({
+            success: true,
+            message: "2FA Secret Generated",
+            qrCodeUrl: newSecret.otpauth_url,
+            secret: newSecret.base32,
+          });
+        }
+
+        res.send({
+          success: true,
+          message: "2FA already enabled",
+          secret: secret,
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ success: false, message: "Server error" });
+      }
+    });
+
+    // Verify 2FA during Login (All Admins must verify)
+    app.post("/auth/verify-2fa", async (req, res) => {
+      try {
+        const { email, totpCode } = req.body;
+
+        if (!email || !totpCode || totpCode.length !== 6) {
+          return res
+            .status(400)
+            .send({ success: false, message: "Invalid data" });
+        }
+
+        const user = await db.collection("users").findOne({ email });
+        if (!user) {
+          return res.send({ success: false, message: "User not found" });
+        }
+
+        // শুধু অ্যাডমিনদের জন্য 2FA চেক
+        if (!user.isAdmin) {
+          return res.send({ success: true }); // normal user - no need 2FA
+        }
+
+        // Admin কিন্তু secret নেই → জোর করে তৈরি করতে বলুন
+        if (!user.twoFactorSecret) {
+          return res.send({
+            success: false,
+            message: "2FA not setup. Please contact super admin.",
+          });
+        }
+
+        const isValid = speakeasy.totp.verify({
+          secret: user.twoFactorSecret,
+          encoding: "base32",
+          token: totpCode,
+          window: 2,
+        });
+
+        res.send({ success: isValid });
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ success: false, message: "Server error" });
+      }
     });
 
     app.get("/", (req, res) => {
