@@ -1474,7 +1474,7 @@ async function run() {
       const email = req.params.email;
       const query = { email: email };
       const updatedDoc = {
-        $set: { " storeInfo.footer_contact": data },
+        $set: { "storeInfo.footer_contact": data },
       };
       const result = await db.collection("users").updateOne(query, updatedDoc);
       res.send(result);
