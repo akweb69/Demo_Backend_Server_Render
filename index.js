@@ -261,10 +261,19 @@ async function run() {
     });
     app.delete("/products/:id", async (req, res) => {
       const id = req.params.id;
-      const result = await db
+
+      const result1 = await db
         .collection("products")
         .deleteOne({ _id: new ObjectId(id) });
-      res.send(result);
+
+      const result2 = await db
+        .collection("myProduct")
+        .deleteMany({ productId: id });
+
+      res.send({
+        deletedProduct: result1,
+        deletedMyProduct: result2,
+      });
     });
     app.patch("/products/:id", async (req, res) => {
       const id = req.params.id;
