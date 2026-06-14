@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const speakeasy = require("speakeasy");
-const nodemailer = require("nodemailer");
+// for send email
+const { Resend } = require("resend");
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
@@ -27,6 +28,7 @@ const client = new MongoClient(uri, {
 // ===========================================
 
 const db = client.db(process.env.DB_USER);
+const resend = new Resend("re_LauPEiUr_BeWCSFdiUJpCr94aejnBBtEL");
 
 // ===========================================
 // Mongo Connect
@@ -38,48 +40,14 @@ async function run() {
 
     console.log("MongoDB Connected");
 
-    // ===========================================
-    // Nodemailer all setup
-    // const transporter = nodemailer.createTransport({
-    //   service: "gmail",
-    //   auth: {
-    //     user: process.env.EMAIL_USER,
-    //     pass: process.env.EMAIL_PASS,
-    //   },
-    // });
-
-    // new-------->
-    // run() function এর একদম শুরুতে — একবারই transporter বানাও
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-
-    // Verify connection (optional but helpful for debugging)
-    transporter.verify((error, success) => {
-      if (error) {
-        console.log("Email transporter error:", error);
-      } else {
-        console.log("Email server ready ✓");
-      }
-    });
     app.get("/test-email", async (req, res) => {
       try {
-        await transporter.sendMail({
-          from: process.env.EMAIL_USER,
-          to: "abukalameeebsmrstu@gmail.com",
+        await resend.emails.send({
+          from: "onboarding@resend.dev", // প্রথমে এটাই use করো
+          to: "akwebdev69@gmail.com",
           subject: "Test Email",
           text: "Nodemailer working successfully",
         });
-
         res.send("Email sent");
       } catch (error) {
         console.log(error);
@@ -452,34 +420,6 @@ async function run() {
 
         // অর্ডার ডাটাবেজে সংরক্ষণ করা
         const result = await db.collection("orders").insertOne(orderData);
-
-        // send a email to the user with the order details -- with node mailer
-        const mailOptions = {
-          from: `"UnicDropex" <${process.env.EMAIL_USER}>`,
-          to: orderData.email,
-
-          bcc: ["freelancerrobi8@gmail.com", "abukalameeebsmrstu@gmail.com"],
-
-          subject: "Order Confirmation",
-
-          html: `
-    <h2>Order Confirmed 🎉</h2>
-    <p>Your order has been placed successfully.</p>
-
-    <p><strong>Order ID:</strong> ${result.insertedId}</p>
-    <p><strong>Product:</strong> ${productName}</p>
-    <p><strong>Size:</strong> ${size}</p>
-    <p><strong>Quantity:</strong> ${quantity}</p>
-
-    <p>Please check your UnicDropex account for more details.</p>
-  `,
-        };
-        try {
-          await transporter.sendMail(mailOptions);
-          console.log("Email sent successfully");
-        } catch (error) {
-          console.error("Email send failed:", error);
-        }
 
         res.send({
           success: true,
