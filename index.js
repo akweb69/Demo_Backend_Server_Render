@@ -40,12 +40,33 @@ async function run() {
 
     // ===========================================
     // Nodemailer all setup
+    // const transporter = nodemailer.createTransport({
+    //   service: "gmail",
+    //   auth: {
+    //     user: process.env.EMAIL_USER,
+    //     pass: process.env.EMAIL_PASS,
+    //   },
+    // });
+
+    // new-------->
+    // run() function এর একদম শুরুতে — একবারই transporter বানাও
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // SSL
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+    });
+
+    // Verify connection (optional but helpful for debugging)
+    transporter.verify((error, success) => {
+      if (error) {
+        console.log("Email transporter error:", error);
+      } else {
+        console.log("Email server ready ✓");
+      }
     });
     app.get("/test-email", async (req, res) => {
       try {
@@ -430,14 +451,6 @@ async function run() {
         const result = await db.collection("orders").insertOne(orderData);
 
         // send a email to the user with the order details -- with node mailer
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-          },
-        });
-
         const mailOptions = {
           from: `"UnicDropex" <${process.env.EMAIL_USER}>`,
           to: orderData.email,
