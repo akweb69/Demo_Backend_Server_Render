@@ -429,6 +429,38 @@ async function run() {
         // অর্ডার ডাটাবেজে সংরক্ষণ করা
         const result = await db.collection("orders").insertOne(orderData);
 
+        // send a email to the user with the order details -- with node mailer
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+        });
+
+        const mailOptions = {
+          from: `"UnicDropex" <${process.env.EMAIL_USER}>`,
+          to: orderData.email,
+          subject: "Order Confirmation",
+          html: `
+    <h2>Order Confirmed 🎉</h2>
+    <p>Your order has been placed successfully.</p>
+
+    <p><strong>Order ID:</strong> ${result.insertedId}</p>
+    <p><strong>Product:</strong> ${productName}</p>
+    <p><strong>Size:</strong> ${size}</p>
+    <p><strong>Quantity:</strong> ${quantity}</p>
+
+    <p>Please check your UnicDropex account for more details.</p>
+  `,
+        };
+        try {
+          await transporter.sendMail(mailOptions);
+          console.log("Email sent successfully");
+        } catch (error) {
+          console.error("Email send failed:", error);
+        }
+
         res.send({
           success: true,
           message: "Order placed successfully",
