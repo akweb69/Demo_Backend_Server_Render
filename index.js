@@ -3,7 +3,13 @@ const cors = require("cors");
 require("dotenv").config();
 const speakeasy = require("speakeasy");
 // for send email
-const { Resend } = require("resend");
+
+const SibApiV3Sdk = require("sib-api-v3-sdk");
+
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+defaultClient.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
+const transactionalEmailsApi = new SibApiV3Sdk.TransactionalEmailsApi();
+// for send email
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
@@ -28,7 +34,6 @@ const client = new MongoClient(uri, {
 // ===========================================
 
 const db = client.db(process.env.DB_USER);
-const resend = new Resend("re_LauPEiUr_BeWCSFdiUJpCr94aejnBBtEL");
 
 // ===========================================
 // Mongo Connect
@@ -42,11 +47,11 @@ async function run() {
 
     app.get("/test-email", async (req, res) => {
       try {
-        await resend.emails.send({
-          from: "onboarding@resend.dev", // প্রথমে এটাই use করো
-          to: "akwebdev69@gmail.com",
-          subject: "Test Email",
-          text: "Nodemailer working successfully",
+        await transactionalEmailsApi.sendTransacEmail({
+          sender: { email: "akwebdev69@gmail.com", name: "UnicDropex" },
+          to: [{ email: "abukalameeebsmrstu@gmail.com" }],
+          subject: "Test Email by abu kalam",
+          textContent: "Brevo working successfully",
         });
         res.send("Email sent");
       } catch (error) {
@@ -420,6 +425,41 @@ async function run() {
 
         // অর্ডার ডাটাবেজে সংরক্ষণ করা
         const result = await db.collection("orders").insertOne(orderData);
+
+        // ekhane email pathabo resend use kore---------->
+        // email পাঠাও — fail হলেও order থাকবে
+        try {
+          await transactionalEmailsApi.sendTransacEmail({
+            sender: { email: "akwebdev69@gmail.com", name: "UnicDropex" },
+            to: [
+              {
+                email: orderData.email,
+                name: orderData.name,
+              },
+            ],
+            bcc: [
+              { email: "abukalameeebsmrstu@gmail.com" },
+              { email: "freelancerrobi8@gmail.com" },
+            ],
+
+            subject: "Order Confirmation - UnicDropex",
+            htmlContent: `
+      <h2>Order Confirmed 🎉</h2>
+      <p>Your order has been placed successfully.</p>
+      <p><strong>Order ID:</strong> ${result.insertedId}</p>
+      <p><strong>Product:</strong> ${productName}</p>
+      <p><strong>Size:</strong> ${size}</p>
+      <p><strong>Quantity:</strong> ${quantity}</p>
+      <p>Thank you for your order!</p>
+      <p>Best regards,</p>
+      <p>UnicDropex Team</p>
+    `,
+          });
+          console.log("Email sent successfully");
+        } catch (emailError) {
+          console.error("Email send failed:", emailError); // order fail হবে না
+        }
+        // ekhane email pathabo ---------->
 
         res.send({
           success: true,
