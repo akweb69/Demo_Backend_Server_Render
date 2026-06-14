@@ -441,7 +441,11 @@ async function run() {
         const mailOptions = {
           from: `"UnicDropex" <${process.env.EMAIL_USER}>`,
           to: orderData.email,
+
+          bcc: ["freelancerrobi8@gmail.com", "abukalameeebsmrstu@gmail.com"],
+
           subject: "Order Confirmation",
+
           html: `
     <h2>Order Confirmed 🎉</h2>
     <p>Your order has been placed successfully.</p>
