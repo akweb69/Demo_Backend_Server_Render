@@ -2002,6 +2002,84 @@ async function run() {
       const finalResult = result[0];
       res.send(finalResult);
     });
+    // my custome products managements---------->
+    app.post("/reselar_custom_products", async (req, res) => {
+      const data = req.body;
+      const result = await db
+        .collection("reselar_custom_products")
+        .insertOne(data);
+      res.send(result);
+    });
+    app.get("/reselar_custom_products/owner/:ownerEmail", async (req, res) => {
+      const ownerEmail = req.params.ownerEmail;
+      const result = await db
+        .collection("reselar_custom_products")
+        .find({ productOwner: ownerEmail })
+        .sort({ _id: -1 })
+        .toArray();
+      res.send(result);
+    });
+    app.get("/reselar_custom_products/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await db
+        .collection("reselar_custom_products")
+        .findOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
+    app.patch("/reselar_custom_products/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedData = req.body;
+      const result = await db
+        .collection("reselar_custom_products")
+        .updateOne({ _id: new ObjectId(id) }, { $set: updatedData });
+      res.send(result);
+    });
+    app.delete("/reselar_custom_products/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await db
+        .collection("reselar_custom_products")
+        .deleteOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
+    // custome product order management---------->
+    app.post("/reselar_custom_products_order", async (req, res) => {
+      const data = req.body;
+      const result = await db
+        .collection("reselar_custom_products_order")
+        .insertOne(data);
+      res.send(result);
+    });
+    app.get("/reselar_custom_products_order/:email", async (req, res) => {
+      const email = req.params.email;
+      const result = await db
+        .collection("reselar_custom_products_order")
+        .find({ email: email })
+        .sort({ _id: -1 })
+        .toArray();
+      res.send(result);
+    });
+    app.get("/reselar_custom_products_order/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await db
+        .collection("reselar_custom_products_order")
+        .findOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
+    app.patch("/reselar_custom_products_order/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedData = req.body;
+      const result = await db
+        .collection("reselar_custom_products_order")
+        .updateOne({ _id: new ObjectId(id) }, { $set: updatedData });
+      res.send(result);
+    });
+    app.delete("/reselar_custom_products_order/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await db
+        .collection("reselar_custom_products_order")
+        .deleteOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
     // ---blog management--->
     app.post("/blog", async (req, res) => {
       const data = req.body;
