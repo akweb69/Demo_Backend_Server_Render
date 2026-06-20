@@ -429,201 +429,202 @@ async function run() {
         // ekhane email pathabo resend use kore---------->
         // unicdropex@gmail.com
         // email পাঠাও — fail হলেও order থাকবে
-        try {
-          await transactionalEmailsApi.sendTransacEmail({
-            sender: { email: "akwebdev69@gmail.com", name: "UnicDropex" },
-            to: [
-              {
-                email: orderData.email,
-                name: orderData.name,
-              },
-            ],
-            bcc: [
-              { email: "abukalameeebsmrstu@gmail.com" },
-              { email: "unicdropex@gmail.com" },
-            ],
 
-            subject: "Order Confirmation - UnicDropex",
-            htmlContent: `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Order Confirmation</title>
-</head>
-<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,sans-serif;">
+        //         try {
+        //           await transactionalEmailsApi.sendTransacEmail({
+        //             sender: { email: "akwebdev69@gmail.com", name: "UnicDropex" },
+        //             to: [
+        //               {
+        //                 email: orderData.email,
+        //                 name: orderData.name,
+        //               },
+        //             ],
+        //             bcc: [
+        //               { email: "abukalameeebsmrstu@gmail.com" },
+        //               { email: "unicdropex@gmail.com" },
+        //             ],
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:30px 0;">
-    <tr>
-      <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+        //             subject: "Order Confirmation - UnicDropex",
+        //             htmlContent: `
+        // <!DOCTYPE html>
+        // <html lang="en">
+        // <head>
+        //   <meta charset="UTF-8" />
+        //   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        //   <title>Order Confirmation</title>
+        // </head>
+        // <body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,sans-serif;">
 
-          <!-- HEADER -->
-          <tr>
-            <td style="background:linear-gradient(135deg,#FF6B00,#FF8C00);padding:30px 40px;text-align:center;">
-              <img src="https://i.ibb.co/2YnJ5KqW/download-3.jpg" alt="UnicDropex Logo" style="height:60px;object-fit:contain;margin-bottom:12px;" />
-              <h1 style="color:#ffffff;margin:0;font-size:26px;letter-spacing:1px;">Order Confirmed! 🎉</h1>
-              <p style="color:#ffe0c0;margin:6px 0 0;font-size:14px;">Thank you for your purchase</p>
-            </td>
-          </tr>
+        //   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:30px 0;">
+        //     <tr>
+        //       <td align="center">
+        //         <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
 
-          <!-- GREETING -->
-          <tr>
-            <td style="padding:30px 40px 10px;">
-              <p style="font-size:16px;color:#333;margin:0;">
-                Hello <strong>${orderData?.delivery_details?.name || "Customer"}</strong>,
-              </p>
-              <p style="font-size:14px;color:#666;margin:10px 0 0;">
-                Your order has been successfully placed. Here are your order details:
-              </p>
-            </td>
-          </tr>
+        //           <!-- HEADER -->
+        //           <tr>
+        //             <td style="background:linear-gradient(135deg,#FF6B00,#FF8C00);padding:30px 40px;text-align:center;">
+        //               <img src="https://i.ibb.co/2YnJ5KqW/download-3.jpg" alt="UnicDropex Logo" style="height:60px;object-fit:contain;margin-bottom:12px;" />
+        //               <h1 style="color:#ffffff;margin:0;font-size:26px;letter-spacing:1px;">Order Confirmed! 🎉</h1>
+        //               <p style="color:#ffe0c0;margin:6px 0 0;font-size:14px;">Thank you for your purchase</p>
+        //             </td>
+        //           </tr>
 
-          <!-- ORDER ID BADGE -->
-          <tr>
-            <td style="padding:10px 40px 20px;">
-              <div style="background:#fff5ee;border-left:4px solid #FF6B00;padding:12px 16px;border-radius:6px;">
-                <p style="margin:0;font-size:13px;color:#888;">Order ID</p>
-                <p style="margin:4px 0 0;font-size:16px;font-weight:bold;color:#FF6B00;">#${result.insertedId}</p>
-              </div>
-            </td>
-          </tr>
+        //           <!-- GREETING -->
+        //           <tr>
+        //             <td style="padding:30px 40px 10px;">
+        //               <p style="font-size:16px;color:#333;margin:0;">
+        //                 Hello <strong>${orderData?.delivery_details?.name || "Customer"}</strong>,
+        //               </p>
+        //               <p style="font-size:14px;color:#666;margin:10px 0 0;">
+        //                 Your order has been successfully placed. Here are your order details:
+        //               </p>
+        //             </td>
+        //           </tr>
 
-          <!-- PRODUCT INFO -->
-          <tr>
-            <td style="padding:0 40px 20px;">
-              <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ffe0c0;border-radius:10px;overflow:hidden;">
-                <tr>
-                  <td style="background:#fff5ee;padding:12px 16px;">
-                    <p style="margin:0;font-size:13px;font-weight:bold;color:#FF6B00;text-transform:uppercase;letter-spacing:1px;">📦 Product Details</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:16px;">
-                    <table width="100%" cellpadding="6" cellspacing="0">
-                      <tr>
-                        <td style="font-size:13px;color:#888;width:45%;">Product Name</td>
-                        <td style="font-size:13px;color:#333;font-weight:bold;">${productName}</td>
-                      </tr>
-                      <tr style="background:#fafafa;">
-                        <td style="font-size:13px;color:#888;">Size</td>
-                        <td style="font-size:13px;color:#333;font-weight:bold;">${size}</td>
-                      </tr>
-                      <tr>
-                        <td style="font-size:13px;color:#888;">Quantity</td>
-                        <td style="font-size:13px;color:#333;font-weight:bold;">${quantity}</td>
-                      </tr>
-                      <tr style="background:#fafafa;">
-                        <td style="font-size:13px;color:#888;">Selling Price</td>
-                        <td style="font-size:13px;color:#333;font-weight:bold;">৳ ${orderData?.amar_bikri_mullo || "N/A"}</td>
-                      </tr>
-                      <tr>
-                        <td style="font-size:13px;color:#888;">Delivery Charge</td>
-                        <td style="font-size:13px;color:#333;font-weight:bold;">৳ ${orderData?.delivery_charge || "N/A"}</td>
-                      </tr>
-                      <tr style="background:#fafafa;">
-                        <td style="font-size:13px;color:#888;">Profit</td>
-                        <td style="font-size:13px;color:#27ae60;font-weight:bold;">৳ ${orderData?.profit || "N/A"}</td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+        //           <!-- ORDER ID BADGE -->
+        //           <tr>
+        //             <td style="padding:10px 40px 20px;">
+        //               <div style="background:#fff5ee;border-left:4px solid #FF6B00;padding:12px 16px;border-radius:6px;">
+        //                 <p style="margin:0;font-size:13px;color:#888;">Order ID</p>
+        //                 <p style="margin:4px 0 0;font-size:16px;font-weight:bold;color:#FF6B00;">#${result.insertedId}</p>
+        //               </div>
+        //             </td>
+        //           </tr>
 
-          <!-- STORE INFO -->
-          <tr>
-            <td style="padding:0 40px 20px;">
-              <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ffe0c0;border-radius:10px;overflow:hidden;">
-                <tr>
-                  <td style="background:#fff5ee;padding:12px 16px;">
-                    <p style="margin:0;font-size:13px;font-weight:bold;color:#FF6B00;text-transform:uppercase;letter-spacing:1px;">🏪 Order From Store</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:16px;">
-                    <table cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td style="padding-right:14px;">
-                          <img src="${orderData?.store_info?.shopImage || "https://i.ibb.co/2YnJ5KqW/download-3.jpg"}" 
-                               alt="Store Logo" 
-                               style="width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid #FF6B00;" />
-                        </td>
-                        <td>
-                          <p style="margin:0;font-size:15px;font-weight:bold;color:#333;">${orderData?.store_info?.shopName || "UnicDropex Store"}</p>
-                          <p style="margin:4px 0 0;font-size:12px;color:#888;">Powered by UnicDropex</p>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+        //           <!-- PRODUCT INFO -->
+        //           <tr>
+        //             <td style="padding:0 40px 20px;">
+        //               <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ffe0c0;border-radius:10px;overflow:hidden;">
+        //                 <tr>
+        //                   <td style="background:#fff5ee;padding:12px 16px;">
+        //                     <p style="margin:0;font-size:13px;font-weight:bold;color:#FF6B00;text-transform:uppercase;letter-spacing:1px;">📦 Product Details</p>
+        //                   </td>
+        //                 </tr>
+        //                 <tr>
+        //                   <td style="padding:16px;">
+        //                     <table width="100%" cellpadding="6" cellspacing="0">
+        //                       <tr>
+        //                         <td style="font-size:13px;color:#888;width:45%;">Product Name</td>
+        //                         <td style="font-size:13px;color:#333;font-weight:bold;">${productName}</td>
+        //                       </tr>
+        //                       <tr style="background:#fafafa;">
+        //                         <td style="font-size:13px;color:#888;">Size</td>
+        //                         <td style="font-size:13px;color:#333;font-weight:bold;">${size}</td>
+        //                       </tr>
+        //                       <tr>
+        //                         <td style="font-size:13px;color:#888;">Quantity</td>
+        //                         <td style="font-size:13px;color:#333;font-weight:bold;">${quantity}</td>
+        //                       </tr>
+        //                       <tr style="background:#fafafa;">
+        //                         <td style="font-size:13px;color:#888;">Selling Price</td>
+        //                         <td style="font-size:13px;color:#333;font-weight:bold;">৳ ${orderData?.amar_bikri_mullo || "N/A"}</td>
+        //                       </tr>
+        //                       <tr>
+        //                         <td style="font-size:13px;color:#888;">Delivery Charge</td>
+        //                         <td style="font-size:13px;color:#333;font-weight:bold;">৳ ${orderData?.delivery_charge || "N/A"}</td>
+        //                       </tr>
+        //                       <tr style="background:#fafafa;">
+        //                         <td style="font-size:13px;color:#888;">Profit</td>
+        //                         <td style="font-size:13px;color:#27ae60;font-weight:bold;">৳ ${orderData?.profit || "N/A"}</td>
+        //                       </tr>
+        //                     </table>
+        //                   </td>
+        //                 </tr>
+        //               </table>
+        //             </td>
+        //           </tr>
 
-          <!-- CUSTOMER INFO -->
-          <tr>
-            <td style="padding:0 40px 30px;">
-              <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ffe0c0;border-radius:10px;overflow:hidden;">
-                <tr>
-                  <td style="background:#fff5ee;padding:12px 16px;">
-                    <p style="margin:0;font-size:13px;font-weight:bold;color:#FF6B00;text-transform:uppercase;letter-spacing:1px;">👤 Customer Information</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:16px;">
-                    <table width="100%" cellpadding="6" cellspacing="0">
-                      <tr>
-                        <td style="font-size:13px;color:#888;width:45%;">Customer Name</td>
-                        <td style="font-size:13px;color:#333;font-weight:bold;">${orderData?.delivery_details?.name || "N/A"}</td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+        //           <!-- STORE INFO -->
+        //           <tr>
+        //             <td style="padding:0 40px 20px;">
+        //               <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ffe0c0;border-radius:10px;overflow:hidden;">
+        //                 <tr>
+        //                   <td style="background:#fff5ee;padding:12px 16px;">
+        //                     <p style="margin:0;font-size:13px;font-weight:bold;color:#FF6B00;text-transform:uppercase;letter-spacing:1px;">🏪 Order From Store</p>
+        //                   </td>
+        //                 </tr>
+        //                 <tr>
+        //                   <td style="padding:16px;">
+        //                     <table cellpadding="0" cellspacing="0">
+        //                       <tr>
+        //                         <td style="padding-right:14px;">
+        //                           <img src="${orderData?.store_info?.shopImage || "https://i.ibb.co/2YnJ5KqW/download-3.jpg"}"
+        //                                alt="Store Logo"
+        //                                style="width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid #FF6B00;" />
+        //                         </td>
+        //                         <td>
+        //                           <p style="margin:0;font-size:15px;font-weight:bold;color:#333;">${orderData?.store_info?.shopName || "UnicDropex Store"}</p>
+        //                           <p style="margin:4px 0 0;font-size:12px;color:#888;">Powered by UnicDropex</p>
+        //                         </td>
+        //                       </tr>
+        //                     </table>
+        //                   </td>
+        //                 </tr>
+        //               </table>
+        //             </td>
+        //           </tr>
 
-          <!-- DIVIDER -->
-          <tr>
-            <td style="padding:0 40px;">
-              <hr style="border:none;border-top:1px solid #f0e0d0;margin:0;" />
-            </td>
-          </tr>
+        //           <!-- CUSTOMER INFO -->
+        //           <tr>
+        //             <td style="padding:0 40px 30px;">
+        //               <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #ffe0c0;border-radius:10px;overflow:hidden;">
+        //                 <tr>
+        //                   <td style="background:#fff5ee;padding:12px 16px;">
+        //                     <p style="margin:0;font-size:13px;font-weight:bold;color:#FF6B00;text-transform:uppercase;letter-spacing:1px;">👤 Customer Information</p>
+        //                   </td>
+        //                 </tr>
+        //                 <tr>
+        //                   <td style="padding:16px;">
+        //                     <table width="100%" cellpadding="6" cellspacing="0">
+        //                       <tr>
+        //                         <td style="font-size:13px;color:#888;width:45%;">Customer Name</td>
+        //                         <td style="font-size:13px;color:#333;font-weight:bold;">${orderData?.delivery_details?.name || "N/A"}</td>
+        //                       </tr>
+        //                     </table>
+        //                   </td>
+        //                 </tr>
+        //               </table>
+        //             </td>
+        //           </tr>
 
-          <!-- SIGNATURE -->
-          <tr>
-            <td style="padding:30px 40px;text-align:center;">
-              <img src="https://i.ibb.co/2YnJ5KqW/download-3.jpg" alt="UnicDropex" style="height:45px;object-fit:contain;margin-bottom:12px;" />
-              <p style="margin:0;font-size:14px;color:#333;font-weight:bold;">UnicDropex Team</p>
-              <p style="margin:6px 0;font-size:13px;color:#888;">Your trusted dropshipping partner</p>
-              <a href="https://unicdropex.com" style="color:#FF6B00;font-size:13px;text-decoration:none;font-weight:bold;">🌐 www.unicdropex.com</a>
-            </td>
-          </tr>
+        //           <!-- DIVIDER -->
+        //           <tr>
+        //             <td style="padding:0 40px;">
+        //               <hr style="border:none;border-top:1px solid #f0e0d0;margin:0;" />
+        //             </td>
+        //           </tr>
 
-          <!-- FOOTER -->
-          <tr>
-            <td style="background:#FF6B00;padding:16px 40px;text-align:center;">
-              <p style="margin:0;font-size:12px;color:#ffffff;">© 2025 UnicDropex. All rights reserved.</p>
-              <p style="margin:6px 0 0;font-size:11px;color:#ffe0c0;">This is an automated email, please do not reply.</p>
-            </td>
-          </tr>
+        //           <!-- SIGNATURE -->
+        //           <tr>
+        //             <td style="padding:30px 40px;text-align:center;">
+        //               <img src="https://i.ibb.co/2YnJ5KqW/download-3.jpg" alt="UnicDropex" style="height:45px;object-fit:contain;margin-bottom:12px;" />
+        //               <p style="margin:0;font-size:14px;color:#333;font-weight:bold;">UnicDropex Team</p>
+        //               <p style="margin:6px 0;font-size:13px;color:#888;">Your trusted dropshipping partner</p>
+        //               <a href="https://unicdropex.com" style="color:#FF6B00;font-size:13px;text-decoration:none;font-weight:bold;">🌐 www.unicdropex.com</a>
+        //             </td>
+        //           </tr>
 
-        </table>
-      </td>
-    </tr>
-  </table>
+        //           <!-- FOOTER -->
+        //           <tr>
+        //             <td style="background:#FF6B00;padding:16px 40px;text-align:center;">
+        //               <p style="margin:0;font-size:12px;color:#ffffff;">© 2025 UnicDropex. All rights reserved.</p>
+        //               <p style="margin:6px 0 0;font-size:11px;color:#ffe0c0;">This is an automated email, please do not reply.</p>
+        //             </td>
+        //           </tr>
 
-</body>
-</html>
-`,
-          });
-          console.log("Email sent successfully");
-        } catch (emailError) {
-          console.error("Email send failed:", emailError); // order fail হবে না
-        }
+        //         </table>
+        //       </td>
+        //     </tr>
+        //   </table>
+
+        // </body>
+        // </html>
+        // `,
+        //           });
+        //           console.log("Email sent successfully");
+        //         } catch (emailError) {
+        //           console.error("Email send failed:", emailError); // order fail হবে না
+        //         }
         // ekhane email pathabo ---------->
 
         res.send({
